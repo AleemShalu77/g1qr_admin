@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950">
+    <%- include('partials/sidebar') %>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+      <%- include('partials/dashboardHeader', { pageTitle: 'Dashboard', pageSubtitle: 'Welcome back, Admin' }) %>
+
+      <!-- Page Content -->
+      <main class="p-4 lg:p-6">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <!-- Total Users -->
+          <div class="bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-colors">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
+                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+              </div>
+              <span class="flex items-center gap-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                12%
+              </span>
+            </div>
+            <p class="text-2xl font-bold text-white mb-1">2,847</p>
+            <p class="text-sm text-slate-400">Total Users</p>
+          </div>
+
+          <!-- Active QR Codes -->
+          <div class="bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-colors">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                </svg>
+              </div>
+              <span class="flex items-center gap-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                8%
+              </span>
+            </div>
+            <p class="text-2xl font-bold text-white mb-1">1,234</p>
+            <p class="text-sm text-slate-400">Active QR Codes</p>
+          </div>
+
+          <!-- Active Memberships -->
+          <div class="bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-colors">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                </svg>
+              </div>
+              <span class="flex items-center gap-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                23%
+              </span>
+            </div>
+            <p class="text-2xl font-bold text-white mb-1">892</p>
+            <p class="text-sm text-slate-400">Active Memberships</p>
+          </div>
+
+          <!-- Revenue -->
+          <div class="bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-colors">
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="flex items-center gap-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                18%
+              </span>
+            </div>
+            <p class="text-2xl font-bold text-white mb-1">₹4,52,890</p>
+            <p class="text-sm text-slate-400">Total Revenue</p>
+          </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Recent Users -->
+          <div class="lg:col-span-2 bg-slate-900/50 border border-white/5 rounded-2xl">
+            <div class="flex items-center justify-between p-5 border-b border-white/5">
+              <div>
+                <h3 class="text-white font-semibold">Recent Users</h3>
+                <p class="text-sm text-slate-400">Latest registered users</p>
+              </div>
+              <a href="/dashboard/users" class="text-sm text-indigo-400 hover:text-indigo-300 transition-colors">View all →</a>
+            </div>
+            <div class="p-5">
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead>
+                    <tr class="text-left text-xs text-slate-500 uppercase tracking-wider">
+                      <th class="pb-3 font-medium">User</th>
+                      <th class="pb-3 font-medium">Email</th>
+                      <th class="pb-3 font-medium">Status</th>
+                      <th class="pb-3 font-medium">Joined</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-white/5">
+                    <tr class="group">
+                      <td class="py-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white text-sm font-medium">
+                            JD
+                          </div>
+                          <span class="text-sm text-white font-medium">John Doe</span>
+                        </div>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">john@example.com</td>
+                      <td class="py-3">
+                        <span class="px-2 py-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 rounded-lg">Active</span>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">2 hours ago</td>
+                    </tr>
+                    <tr class="group">
+                      <td class="py-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
+                            AS
+                          </div>
+                          <span class="text-sm text-white font-medium">Aleem Sheikh</span>
+                        </div>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">aleem@example.com</td>
+                      <td class="py-3">
+                        <span class="px-2 py-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 rounded-lg">Active</span>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">5 hours ago</td>
+                    </tr>
+                    <tr class="group">
+                      <td class="py-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white text-sm font-medium">
+                            MK
+                          </div>
+                          <span class="text-sm text-white font-medium">Mike Kumar</span>
+                        </div>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">mike@example.com</td>
+                      <td class="py-3">
+                        <span class="px-2 py-1 text-xs font-medium text-amber-400 bg-amber-500/10 rounded-lg">Pending</span>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">1 day ago</td>
+                    </tr>
+                    <tr class="group">
+                      <td class="py-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white text-sm font-medium">
+                            SP
+                          </div>
+                          <span class="text-sm text-white font-medium">Sara Patel</span>
+                        </div>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">sara@example.com</td>
+                      <td class="py-3">
+                        <span class="px-2 py-1 text-xs font-medium text-emerald-400 bg-emerald-500/10 rounded-lg">Active</span>
+                      </td>
+                      <td class="py-3 text-sm text-slate-400">2 days ago</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="bg-slate-900/50 border border-white/5 rounded-2xl">
+            <div class="flex items-center justify-between p-5 border-b border-white/5">
+              <div>
+                <h3 class="text-white font-semibold">Recent Activity</h3>
+                <p class="text-sm text-slate-400">Latest system events</p>
+              </div>
+            </div>
+            <div class="p-5 space-y-4">
+              <!-- Activity Item -->
+              <div class="flex gap-3">
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm text-white">New user registered</p>
+                  <p class="text-xs text-slate-500">John Doe joined the platform</p>
+                  <p class="text-xs text-slate-500 mt-1">2 hours ago</p>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div class="flex gap-3">
+                <div class="w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm text-white">New membership purchase</p>
+                  <p class="text-xs text-slate-500">Premium plan purchased by Aleem</p>
+                  <p class="text-xs text-slate-500 mt-1">5 hours ago</p>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div class="flex gap-3">
+                <div class="w-9 h-9 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm text-white">QR Code generated</p>
+                  <p class="text-xs text-slate-500">New QR code for profile #1234</p>
+                  <p class="text-xs text-slate-500 mt-1">1 day ago</p>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div class="flex gap-3">
+                <div class="w-9 h-9 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm text-white">Coupon redeemed</p>
+                  <p class="text-xs text-slate-500">WELCOME20 used by Sara</p>
+                  <p class="text-xs text-slate-500 mt-1">2 days ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="/dashboard/users" class="group bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-indigo-500/20 group-hover:bg-indigo-500/30 flex items-center justify-center transition-colors">
+                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Manage Users</h4>
+                <p class="text-sm text-slate-400">View all app users</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="/dashboard/coupons" class="group bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-amber-500/30 hover:bg-amber-500/5 transition-all">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 group-hover:bg-amber-500/30 flex items-center justify-center transition-colors">
+                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Create Coupon</h4>
+                <p class="text-sm text-slate-400">Add discount codes</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="/dashboard/plans" class="group bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/20 group-hover:bg-emerald-500/30 flex items-center justify-center transition-colors">
+                <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Manage Plans</h4>
+                <p class="text-sm text-slate-400">Edit membership plans</p>
+              </div>
+            </div>
+          </a>
+
+          <a href="/dashboard/purchases" class="group bg-slate-900/50 border border-white/5 rounded-2xl p-5 hover:border-purple-500/30 hover:bg-purple-500/5 transition-all">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/20 group-hover:bg-purple-500/30 flex items-center justify-center transition-colors">
+                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">View Purchases</h4>
+                <p class="text-sm text-slate-400">Track transactions</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Toggle sidebar
+      function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      }
+
+      // Toggle profile menu
+      function toggleProfileMenu() {
+        const menu = document.getElementById('profileMenu');
+        menu.classList.toggle('hidden');
+      }
+
+      // Close profile menu when clicking outside
+      document.addEventListener('click', function(e) {
+        const menu = document.getElementById('profileMenu');
+        const button = e.target.closest('[onclick="toggleProfileMenu()"]');
+        if (!button && !menu.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+    </script>
+  </body>
+</html>
+
+
+

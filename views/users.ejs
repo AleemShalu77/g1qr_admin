@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      #toast {
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+      }
+      #toast.show {
+        transform: translateX(0);
+      }
+
+      .profile-card {
+        transition: all 0.3s ease;
+      }
+      .profile-card.expanded {
+        border-color: rgba(99, 102, 241, 0.3);
+      }
+
+      .modal-overlay {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal-content {
+        transform: scale(0.95) translateY(20px);
+        transition: transform 0.3s ease;
+      }
+      .modal-overlay.show .modal-content {
+        transform: scale(1) translateY(0);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950">
+    <%- include('partials/sidebar') %>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-[100] max-w-sm">
+      <div
+        id="toast-content"
+        class="rounded-2xl p-4 shadow-2xl flex items-start gap-3 border border-white/10 backdrop-blur-xl"
+      >
+        <div id="toast-icon" class="shrink-0 w-6 h-6"></div>
+        <div class="flex-1 min-w-0">
+          <p id="toast-title" class="font-semibold text-sm"></p>
+          <p id="toast-message" class="text-sm opacity-80 mt-0.5"></p>
+        </div>
+        <button
+          onclick="hideToast()"
+          class="shrink-0 text-white/60 hover:text-white transition-colors"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+      <%- include('partials/dashboardHeader', { pageTitle: 'App Users', pageSubtitle: 'Manage users and their profiles' }) %>
+
+      <!-- Page Content -->
+      <main class="p-4 lg:p-6">
+        <!-- Header Actions -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3">
+            <!-- Search -->
+            <div class="relative">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search by email, username..."
+                class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 pl-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 w-64"
+                onkeyup="handleSearch(event)"
+              />
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <!-- Filter by status -->
+            <select
+              id="statusFilter"
+              onchange="loadUsers()"
+              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            <!-- Filter by verification -->
+            <select
+              id="verificationFilter"
+              onchange="loadUsers()"
+              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+            >
+              <option value="">All Users</option>
+              <option value="true">Verified</option>
+              <option value="false">Unverified</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Users List -->
+        <div id="usersContainer" class="space-y-4">
+          <!-- Loading state -->
+          <div id="loadingState" class="text-center py-12">
+            <div class="flex items-center justify-center gap-3">
+              <div
+                class="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"
+              ></div>
+              <span class="text-slate-400">Loading users...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div
+          id="pagination"
+          class="flex items-center justify-between mt-6 px-4 py-4 bg-slate-900/50 border border-white/5 rounded-2xl"
+        >
+          <p id="paginationInfo" class="text-sm text-slate-400">
+            Showing 0 of 0 users
+          </p>
+          <div class="flex items-center gap-2">
+            <button
+              id="prevBtn"
+              onclick="changePage(-1)"
+              disabled
+              class="px-3 py-1.5 text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Previous
+            </button>
+            <span
+              id="pageInfo"
+              class="px-3 py-1.5 text-sm text-white bg-indigo-500/20 rounded-lg"
+              >1</span
+            >
+            <button
+              id="nextBtn"
+              onclick="changePage(1)"
+              disabled
+              class="px-3 py-1.5 text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Profile Details Modal -->
+    <div id="profileModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div class="modal-content bg-slate-900 border border-white/10 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-6 border-b border-white/5">
+          <div class="flex items-center gap-4">
+            <div id="modalAvatar" class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-semibold text-xl shrink-0 overflow-hidden"></div>
+            <div>
+              <h2 id="modalName" class="text-white font-bold text-xl"></h2>
+              <p id="modalUsername" class="text-slate-400 text-sm"></p>
+            </div>
+          </div>
+          <button
+            onclick="closeProfileModal()"
+            class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div id="modalBody" class="flex-1 overflow-y-auto p-6">
+          <!-- Content will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/users.js"></script>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+      function toggleProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        menu.classList.toggle("hidden");
+      }
+      document.addEventListener("click", function (e) {
+        const menu = document.getElementById("profileMenu");
+        const button = e.target.closest('[onclick="toggleProfileMenu()"]');
+        if (!button && !menu.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
+

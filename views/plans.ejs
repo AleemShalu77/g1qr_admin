@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .modal {
+        display: none;
+      }
+      .modal.active {
+        display: flex;
+      }
+
+      #toast {
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+      }
+      #toast.show {
+        transform: translateX(0);
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: #334155;
+        border-radius: 24px;
+        transition: 0.3s;
+      }
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      input:checked + .toggle-slider {
+        background-color: #6366f1;
+      }
+      input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+      input:disabled + .toggle-slider {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950">
+    <%- include('partials/sidebar') %>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-[100] max-w-sm">
+      <div
+        id="toast-content"
+        class="rounded-2xl p-4 shadow-2xl flex items-start gap-3 border border-white/10 backdrop-blur-xl"
+      >
+        <div id="toast-icon" class="shrink-0 w-6 h-6"></div>
+        <div class="flex-1 min-w-0">
+          <p id="toast-title" class="font-semibold text-sm"></p>
+          <p id="toast-message" class="text-sm opacity-80 mt-0.5"></p>
+        </div>
+        <button
+          onclick="hideToast()"
+          class="shrink-0 text-white/60 hover:text-white transition-colors"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+      <%- include('partials/dashboardHeader', { pageTitle: 'Membership Plans',
+      pageSubtitle: 'Manage subscription plans' }) %>
+
+      <!-- Page Content -->
+      <main class="p-4 lg:p-6">
+        <!-- Header Actions -->
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+        >
+          <div class="flex items-center gap-3">
+            <select
+              id="statusFilter"
+              onchange="loadPlans()"
+              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+            >
+              <option value="">All Status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
+          <button
+            onclick="openAddModal()"
+            class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Add Plan
+          </button>
+        </div>
+
+        <!-- Plans Grid -->
+        <div
+          id="plansContainer"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <!-- Loading state -->
+          <div id="loadingState" class="col-span-full text-center py-12">
+            <div class="flex items-center justify-center gap-3">
+              <div
+                class="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"
+              ></div>
+              <span class="text-slate-400">Loading plans...</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add/Edit Plan Modal -->
+    <div
+      id="planModal"
+      class="modal fixed inset-0 z-[60] items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+    >
+      <div
+        class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between p-5 border-b border-white/5 sticky top-0 bg-slate-900"
+        >
+          <h3 id="modalTitle" class="text-lg font-semibold text-white">
+            Add New Plan
+          </h3>
+          <button
+            onclick="closeModal()"
+            class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <form id="planForm" class="p-5 space-y-4">
+          <!-- Basic Info -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1.5"
+                >Slug *</label
+              >
+              <input
+                type="text"
+                id="planSlug"
+                name="slug"
+                required
+                placeholder="e.g., advance"
+                class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50 lowercase"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1.5"
+                >Display Name *</label
+              >
+              <input
+                type="text"
+                id="planDisplayName"
+                name="displayName"
+                required
+                placeholder="e.g., Advance"
+                class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1.5"
+                >Duration (Days) *</label
+              >
+              <input
+                type="number"
+                id="planDurationDays"
+                name="durationDays"
+                required
+                min="1"
+                placeholder="365"
+                class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1.5"
+                >Sort Order</label
+              >
+              <input
+                type="number"
+                id="planSort"
+                name="sort"
+                min="0"
+                placeholder="1"
+                class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50"
+              />
+            </div>
+          </div>
+
+          <!-- Price Book -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <label class="block text-sm font-medium text-slate-300"
+                >Pricing (Price Book) *</label
+              >
+              <button
+                type="button"
+                onclick="addPriceBookItem()"
+                class="text-xs text-indigo-400 hover:text-indigo-300"
+              >
+                + Add Region
+              </button>
+            </div>
+            <div id="priceBookContainer" class="space-y-3">
+              <!-- Price book items will be added here -->
+            </div>
+          </div>
+
+          <!-- Features -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <label class="block text-sm font-medium text-slate-300"
+                >Features</label
+              >
+              <button
+                type="button"
+                onclick="addFeature()"
+                class="text-xs text-indigo-400 hover:text-indigo-300"
+              >
+                + Add Feature
+              </button>
+            </div>
+            <div id="featuresContainer" class="space-y-2">
+              <!-- Features will be added here -->
+            </div>
+          </div>
+
+          <!-- Limits -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1.5"
+                >Medical Histories Limit</label
+              >
+              <input
+                type="number"
+                id="planHistoriesLimit"
+                name="historiesLimit"
+                min="0"
+                placeholder="500"
+                class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-slate-300 mb-1.5"
+                >Documents Limit</label
+              >
+              <input
+                type="number"
+                id="planDocsLimit"
+                name="docsLimit"
+                min="0"
+                placeholder="50"
+                class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50"
+              />
+            </div>
+          </div>
+
+          <!-- Options -->
+          <div class="flex items-center gap-6">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="planHighlight"
+                name="highlight"
+                class="w-4 h-4 rounded border-slate-600 bg-slate-800/50 text-indigo-500 focus:ring-indigo-500"
+              />
+              <span class="text-sm text-slate-300">Highlight Plan</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="planIsActive"
+                name="isActive"
+                checked
+                class="w-4 h-4 rounded border-slate-600 bg-slate-800/50 text-indigo-500 focus:ring-indigo-500"
+              />
+              <span class="text-sm text-slate-300">Active</span>
+            </label>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label class="block text-sm font-medium text-slate-300 mb-1.5"
+              >Notes</label
+            >
+            <textarea
+              id="planNotes"
+              name="notes"
+              rows="2"
+              placeholder="Internal notes about this plan"
+              class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50 resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-4 py-2.5 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              id="submitBtn"
+              class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-indigo-500/25 transition-all disabled:opacity-50"
+            >
+              <span id="submitBtnText">Create Plan</span>
+              <div
+                id="submitBtnSpinner"
+                class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+              ></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/plans.js"></script>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+      function toggleProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        menu.classList.toggle("hidden");
+      }
+      document.addEventListener("click", function (e) {
+        const menu = document.getElementById("profileMenu");
+        const button = e.target.closest('[onclick="toggleProfileMenu()"]');
+        if (!button && !menu.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>

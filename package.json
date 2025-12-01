@@ -1,0 +1,35 @@
+{
+  "name": "g1qr-admin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node server.js",
+    "css": "tailwindcss -i src/css/tailwind.css -o public/css/app.css -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@preline/file-upload": "^3.2.3",
+    "@tailwindcss/cli": "^4.1.14",
+    "axios": "^1.12.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "dropzone": "^6.0.0-beta.2",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "razorpay": "^2.9.6",
+    "vanilla-calendar-pro": "^3.0.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "preline": "^3.2.3",
+    "tailwindcss": "^4.1.14"
+  }
+}
+

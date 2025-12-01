@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      #toast {
+        transform: translateX(120%);
+        transition: transform 0.3s ease;
+      }
+      #toast.show {
+        transform: translateX(0);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950">
+    <%- include('partials/sidebar') %>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-[100] max-w-sm">
+      <div
+        id="toast-content"
+        class="rounded-2xl p-4 shadow-2xl flex items-start gap-3 border border-white/10 backdrop-blur-xl"
+      >
+        <div id="toast-icon" class="shrink-0 w-6 h-6"></div>
+        <div class="flex-1 min-w-0">
+          <p id="toast-title" class="font-semibold text-sm"></p>
+          <p id="toast-message" class="text-sm opacity-80 mt-0.5"></p>
+        </div>
+        <button
+          onclick="hideToast()"
+          class="shrink-0 text-white/60 hover:text-white transition-colors"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+      <%- include('partials/dashboardHeader', { pageTitle: 'Membership Purchases', pageSubtitle: 'View all subscription purchases' }) %>
+
+      <!-- Page Content -->
+      <main class="p-4 lg:p-6">
+        <!-- Header Actions -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div class="flex items-center gap-3">
+            <!-- Search -->
+            <div class="relative">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Search by profile name, username..."
+                class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 pl-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 w-64"
+                onkeyup="handleSearch(event)"
+              />
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <!-- Filter by payment status -->
+            <select
+              id="paymentFilter"
+              onchange="loadPurchases()"
+              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+            >
+              <option value="">All Payments</option>
+              <option value="true">Paid</option>
+              <option value="false">Unpaid</option>
+            </select>
+            <!-- Filter by membership status -->
+            <select
+              id="membershipFilter"
+              onchange="loadPurchases()"
+              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+            >
+              <option value="">All Status</option>
+              <option value="true">Active</option>
+              <option value="false">Expired</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Purchases Table -->
+        <div class="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-white/5">
+                  <th class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider px-5 py-4">
+                    User
+                  </th>
+                  <th class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider px-5 py-4">
+                    Plan
+                  </th>
+                  <th class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider px-5 py-4">
+                    Pricing
+                  </th>
+                  <th class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider px-5 py-4">
+                    Payment
+                  </th>
+                  <th class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider px-5 py-4">
+                    Validity
+                  </th>
+                  <th class="text-left text-xs font-medium text-slate-500 uppercase tracking-wider px-5 py-4">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="purchasesTableBody" class="divide-y divide-white/5">
+                <!-- Loading state -->
+                <tr id="loadingRow">
+                  <td colspan="6" class="px-5 py-8 text-center">
+                    <div class="flex items-center justify-center gap-3">
+                      <div
+                        class="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"
+                      ></div>
+                      <span class="text-slate-400">Loading purchases...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            id="pagination"
+            class="flex items-center justify-between px-5 py-4 border-t border-white/5"
+          >
+            <p id="paginationInfo" class="text-sm text-slate-400">
+              Showing 0 of 0 purchases
+            </p>
+            <div class="flex items-center gap-2">
+              <button
+                id="prevBtn"
+                onclick="changePage(-1)"
+                disabled
+                class="px-3 py-1.5 text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              <span
+                id="pageInfo"
+                class="px-3 py-1.5 text-sm text-white bg-indigo-500/20 rounded-lg"
+                >1</span
+              >
+              <button
+                id="nextBtn"
+                onclick="changePage(1)"
+                disabled
+                class="px-3 py-1.5 text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/purchases.js"></script>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+      function toggleProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        menu.classList.toggle("hidden");
+      }
+      document.addEventListener("click", function (e) {
+        const menu = document.getElementById("profileMenu");
+        const button = e.target.closest('[onclick="toggleProfileMenu()"]');
+        if (!button && !menu.contains(e.target)) {
+          menu.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
+
