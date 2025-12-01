@@ -22,6 +22,7 @@
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const generateModal = document.getElementById("generateModal");
+  const exportBtn = document.getElementById("exportBtn");
 
   // Toast functions
   window.showToast = function (type, title, message) {
@@ -308,6 +309,12 @@
     currentPage = 1;
     searchTerm = ""; // Clear search when batch changes
     searchInput.value = "";
+    
+    // Enable/disable export button based on batch selection
+    if (exportBtn) {
+      exportBtn.disabled = !selectedBatch;
+    }
+    
     loadQRCodes();
   };
 
@@ -400,9 +407,94 @@
     }
   };
 
+  // Export QR Codes
+  window.handleExport = async function () {
+    if (!selectedBatch) {
+      showToast("error", "Error", "Please select a batch to export");
+      return;
+    }
+
+    // Generate jobId: export-YYYY-MM-DD-RandomLetter
+    const now = new Date();
+    const dateStr = now.toISOString().split("T")[0].replace(/-/g, "-");
+    const randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
+    const jobId = `export-${dateStr}-${randomLetter}`;
+
+    try {
+      exportBtn.disabled = true;
+      const originalText = exportBtn.innerHTML;
+      exportBtn.innerHTML = `
+        <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+        Exporting...
+      `;
+
+      const response = await fetch(`${API_BASE_URL}/qrcodes/export`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          batchId: selectedBatch,
+          jobId: jobId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === false) {
+        throw new Error(data.error || "Failed to export QR codes");
+      }
+
+      // Show success message with download link
+      const zipUrl = data.data?.zipUrl;
+      const totalExported = data.data?.totalExported || 0;
+      
+      if (zipUrl) {
+        const BASE_URL = window.APP_CONFIG?.BASE_URL || "http://localhost:3000";
+        const fullZipUrl = zipUrl.startsWith("http") ? zipUrl : `${BASE_URL}${zipUrl}`;
+        
+        showToast(
+          "success",
+          "Export Successful",
+          `Successfully exported ${totalExported} QR codes. Click to download.`
+        );
+        
+        // Create download link
+        setTimeout(() => {
+          const downloadLink = document.createElement("a");
+          downloadLink.href = fullZipUrl;
+          downloadLink.download = `QR_Codes_${selectedBatch}_${jobId}.zip`;
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        }, 500);
+      } else {
+        showToast("success", "Export Successful", `Successfully exported ${totalExported} QR codes`);
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      showToast("error", "Error", error.message || "Failed to export QR codes");
+    } finally {
+      exportBtn.disabled = false;
+      exportBtn.innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Export QR Codes
+      `;
+    }
+  };
+
   // Initialize - only load batches, don't load QR codes initially
   loadBatches();
   // Show initial message
   loadQRCodes();
+  
+  // Initialize export button state
+  if (exportBtn) {
+    exportBtn.disabled = true;
+  }
 })();
 

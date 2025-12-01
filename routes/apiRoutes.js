@@ -316,4 +316,26 @@ router.post("/qrcodes/generate", requireAuth, async (req, res) => {
   }
 });
 
+// POST /api/qrcodes/export - Export QR codes
+router.post("/qrcodes/export", requireAuth, async (req, res) => {
+  try {
+    const data = await apiRequest(
+      "POST",
+      "/appUser/qr-codes/export",
+      req.adminToken,
+      req.body
+    );
+    res.json(data);
+  } catch (error) {
+    console.error("Export QR codes error:", error.response?.data || error.message);
+    res.status(error.response?.status || 500).json({
+      status: false,
+      error:
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to export QR codes",
+    });
+  }
+});
+
 module.exports = router;
