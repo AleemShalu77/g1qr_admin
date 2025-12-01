@@ -29,32 +29,49 @@ router.get("/reset-password/:token", (req, res) => {
 
 // GET /logout - Handle logout
 router.get("/logout", async (req, res) => {
-  try {
-    const token = req.cookies.adminToken;
+  // try {
+  //   const token = req.cookies.adminToken;
 
-    // Call API logout endpoint if token exists
-    if (token) {
-      const respnse = await axios.post(
-        `${API_BASE_URL}/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          timeout: 5000,
-        }
-      );
-      console.log("API logout response:", respnse.data);
-    }
-  } catch (error) {
-    // Log error but continue with logout
-    console.error("API logout error:", error.message);
-  }
+  //   // Call API logout endpoint if token exists
+  //   // if (token) {
+  //   //   const respnse = await axios.post(
+  //   //     `${API_BASE_URL}/auth/logout`,
+  //   //     {},
+  //   //     {
+  //   //       headers: {
+  //   //         Authorization: `Bearer ${token}`,
+  //   //         "Content-Type": "application/json",
+  //   //       },
+  //   //       withCredentials: true,
+  //   //       timeout: 5000,
+  //   //     }
+  //   //   );
+  //   //   console.log("API logout response:", respnse.data);
+  //   // }
+
+  //   res.clearCookie("adminToken", {
+  //     path: "/",
+  //     httpOnly: true,
+  //     sameSite: "None", // required for cross-domain
+  //     secure: true, // required on HTTPS
+  //     // domain: ".fairliefer.de", // <-- FIXED
+  //     maxAge: 0, // immediately expire
+  //   });
+  // } catch (error) {
+  //   // Log error but continue with logout
+  //   console.error("API logout error:", error.message);
+  // }
 
   // Clear cookie and redirect regardless of API response
-  res.clearCookie("adminToken");
+  // res.clearCookie("adminToken");
+  res.clearCookie("adminToken", {
+    path: "/",
+    httpOnly: true,
+    sameSite: "None", // required for cross-domain
+    secure: true, // required on HTTPS
+    domain: ".fairliefer.de", // <-- FIXED
+    maxAge: 0, // immediately expire
+  });
   res.redirect("/login");
 });
 
