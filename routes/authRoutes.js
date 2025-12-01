@@ -34,17 +34,19 @@ router.get("/logout", async (req, res) => {
 
     // Call API logout endpoint if token exists
     if (token) {
-      await axios.post(
-        `${API_BASE_URL}/logout`,
+      const respnse = await axios.post(
+        `${API_BASE_URL}/auth/logout`,
         {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          withCredentials: true,
           timeout: 5000,
         }
       );
+      console.log("API logout response:", respnse.data);
     }
   } catch (error) {
     // Log error but continue with logout
