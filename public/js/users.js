@@ -239,7 +239,7 @@
           <div class="flex items-start justify-between gap-2 sm:gap-3">
             <div class="flex items-start gap-2 sm:gap-3 lg:gap-4 flex-1 min-w-0">
               <!-- User Avatar -->
-              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base sm:text-lg shrink-0">
+              <div class="user-avatar rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base sm:text-lg shrink-0">
                 ${(user.email || "U").charAt(0).toUpperCase()}
               </div>
               
