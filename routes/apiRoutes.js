@@ -326,7 +326,7 @@ router.post("/qrcodes/generate", requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/qrcodes/export - Export QR codes
+// POST /api/qrcodes/export - Export QR codes  --
 router.post("/qrcodes/export", requireAuth, async (req, res) => {
   try {
     const data = await apiRequest(
