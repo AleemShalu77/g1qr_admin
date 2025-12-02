@@ -214,7 +214,10 @@ router.get("/purchases", requireAuth, async (req, res) => {
     const data = await apiRequest("GET", endpoint, req.adminToken);
     res.json(data);
   } catch (error) {
-    console.error("List purchases error:", error.response?.data || error.message);
+    console.error(
+      "List purchases error:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       status: false,
       error:
@@ -240,9 +243,7 @@ router.get("/users", requireAuth, async (req, res) => {
     res.status(error.response?.status || 500).json({
       status: false,
       error:
-        error.response?.data?.error ||
-        error.message ||
-        "Failed to fetch users",
+        error.response?.data?.error || error.message || "Failed to fetch users",
     });
   }
 });
@@ -255,7 +256,10 @@ router.get("/qr-batches", requireAuth, async (req, res) => {
     const data = await apiRequest("GET", "/appUser/qr-batches", req.adminToken);
     res.json(data);
   } catch (error) {
-    console.error("List QR batches error:", error.response?.data || error.message);
+    console.error(
+      "List QR batches error:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       status: false,
       error:
@@ -271,11 +275,11 @@ router.get("/qrcodes", requireAuth, async (req, res) => {
   try {
     const { page = 1, limit = 20, batch_code, qr_code_id } = req.query;
     let endpoint = `/appUser/admin/qrcodes?page=${page}&limit=${limit}`;
-    
+
     if (batch_code) {
       endpoint += `&batch_code=${encodeURIComponent(batch_code)}`;
     }
-    
+
     if (qr_code_id) {
       endpoint += `&qr_code_id=${encodeURIComponent(qr_code_id)}`;
     }
@@ -283,7 +287,10 @@ router.get("/qrcodes", requireAuth, async (req, res) => {
     const data = await apiRequest("GET", endpoint, req.adminToken);
     res.json(data);
   } catch (error) {
-    console.error("List QR codes error:", error.response?.data || error.message);
+    console.error(
+      "List QR codes error:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       status: false,
       error:
@@ -299,13 +306,16 @@ router.post("/qrcodes/generate", requireAuth, async (req, res) => {
   try {
     const data = await apiRequest(
       "POST",
-      "/admin/qr-codes/bulk",
+      "/appUser/qr-codes/bulk",
       req.adminToken,
       req.body
     );
     res.json(data);
   } catch (error) {
-    console.error("Generate QR codes error:", error.response?.data || error.message);
+    console.error(
+      "Generate QR codes error:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       status: false,
       error:
@@ -327,7 +337,10 @@ router.post("/qrcodes/export", requireAuth, async (req, res) => {
     );
     res.json(data);
   } catch (error) {
-    console.error("Export QR codes error:", error.response?.data || error.message);
+    console.error(
+      "Export QR codes error:",
+      error.response?.data || error.message
+    );
     res.status(error.response?.status || 500).json({
       status: false,
       error:
