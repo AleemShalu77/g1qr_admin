@@ -239,7 +239,7 @@
           <div class="flex items-start justify-between gap-2 sm:gap-3">
             <div class="flex items-start gap-2 sm:gap-3 lg:gap-4 flex-1 min-w-0">
               <!-- User Avatar -->
-              <div class="user-avatar rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base sm:text-lg shrink-0">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base sm:text-lg shrink-0">
                 ${(user.email || "U").charAt(0).toUpperCase()}
               </div>
               
@@ -579,7 +579,7 @@
 
     // Set avatar with enhanced design
     if (avatarUrl) {
-      modalAvatar.innerHTML = `<img src="${avatarUrl}" alt="${fullName}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-full h-full items-center justify-center hidden bg-gradient-to-br from-purple-500 to-pink-600">${firstLetter}</div>`;
+      modalAvatar.innerHTML = `<img src="${avatarUrl}" alt="${fullName}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width:64px; height: 64px;"><div class="w-full h-full items-center justify-center hidden bg-gradient-to-br from-purple-500 to-pink-600">${firstLetter}</div>`;
     } else {
       modalAvatar.innerHTML = firstLetter;
     }
