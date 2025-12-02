@@ -211,6 +211,108 @@
       .badge-pulse {
         animation: pulse-glow 2s ease-in-out infinite;
       }
+
+      /* Scrollbar Hide Utility */
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Profile Avatar Fixed Size */
+      .profile-avatar {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+        max-width: 28px !important;
+        max-height: 28px !important;
+      }
+
+      @media (min-width: 640px) {
+        .profile-avatar {
+          width: 32px !important;
+          height: 32px !important;
+          min-width: 32px !important;
+          min-height: 32px !important;
+          max-width: 32px !important;
+          max-height: 32px !important;
+        }
+      }
+
+      /* Google Badge - Better Visibility */
+      .google-badge {
+        color: #60a5fa !important;
+        background-color: rgba(59, 130, 246, 0.15) !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+      }
+
+      /* User Info Row - Smaller Fonts */
+      .user-info-row {
+        font-size: 9px !important;
+        color: rgb(148, 163, 184) !important;
+      }
+
+      @media (min-width: 640px) {
+        .user-info-row {
+          font-size: 10px !important;
+        }
+      }
+
+      /* Joined Date - Ensure Single Line */
+      .joined-date {
+        font-size: 9px !important;
+        white-space: nowrap !important;
+      }
+
+      @media (min-width: 640px) {
+        .joined-date {
+          font-size: 10px !important;
+        }
+      }
+
+      /* Mobile Responsive Styles */
+      @media (max-width: 640px) {
+        /* Modal adjustments for mobile */
+        .modal-content {
+          max-width: 100% !important;
+          max-height: 100vh !important;
+          border-radius: 0 !important;
+          margin: 0 !important;
+        }
+
+        .modal-overlay {
+          padding: 0 !important;
+        }
+
+        /* Toast positioning for mobile */
+        #toast {
+          top: 1rem;
+          right: 1rem;
+          left: 1rem;
+          max-width: none;
+        }
+
+        /* Tab navigation scroll on mobile */
+        #modalTabs {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        #modalTabs::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Smaller text on mobile */
+        #modalBody h3 {
+          font-size: 1rem;
+        }
+        #modalBody h4 {
+          font-size: 0.875rem;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen bg-slate-950">
@@ -254,40 +356,42 @@
       pageSubtitle: 'Manage users and their profiles' }) %>
 
       <!-- Page Content -->
-      <main class="p-4 lg:p-6">
+      <main class="p-3 sm:p-4 lg:p-6">
         <!-- Header Actions -->
-        <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
-        >
-          <div class="flex items-center gap-3">
-            <!-- Search -->
-            <div class="relative">
-              <input
-                type="text"
-                id="searchInput"
-                placeholder="Search by email, username..."
-                class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 pl-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 w-64"
-                onkeyup="handleSearch(event)"
+        <div class="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <!-- Search -->
+          <div class="relative w-full">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search by email, username..."
+              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 pl-10 py-2.5 sm:py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 w-full"
+              onkeyup="handleSearch(event)"
+            />
+            <svg
+              class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
-              <svg
-                class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
+            </svg>
+          </div>
+
+          <!-- Filters Row -->
+          <div
+            class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3"
+          >
             <!-- Filter by status -->
             <select
               id="statusFilter"
               onchange="loadUsers()"
-              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+              class="flex-1 sm:flex-none bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50 min-w-0"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -297,7 +401,7 @@
             <select
               id="verificationFilter"
               onchange="loadUsers()"
-              class="bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50"
+              class="flex-1 sm:flex-none bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50 min-w-0"
             >
               <option value="">All Users</option>
               <option value="true">Verified</option>
@@ -322,9 +426,12 @@
         <!-- Pagination -->
         <div
           id="pagination"
-          class="flex items-center justify-between mt-6 px-4 py-4 bg-slate-900/50 border border-white/5 rounded-2xl"
+          class="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0 mt-4 sm:mt-6 px-3 sm:px-4 py-3 sm:py-4 bg-slate-900/50 border border-white/5 rounded-2xl"
         >
-          <p id="paginationInfo" class="text-sm text-slate-400">
+          <p
+            id="paginationInfo"
+            class="text-xs sm:text-sm text-slate-400 text-center sm:text-left"
+          >
             Showing 0 of 0 users
           </p>
           <div class="flex items-center gap-2">
@@ -332,20 +439,21 @@
               id="prevBtn"
               onclick="changePage(-1)"
               disabled
-              class="px-3 py-1.5 text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Previous
+              <span class="hidden sm:inline">Previous</span>
+              <span class="sm:hidden">Prev</span>
             </button>
             <span
               id="pageInfo"
-              class="px-3 py-1.5 text-sm text-white bg-indigo-500/20 rounded-lg"
+              class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-white bg-indigo-500/20 rounded-lg min-w-[2.5rem] text-center"
               >1</span
             >
             <button
               id="nextBtn"
               onclick="changePage(1)"
               disabled
-              class="px-3 py-1.5 text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>
@@ -357,10 +465,10 @@
     <!-- Profile Details Modal -->
     <div
       id="profileModal"
-      class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-black/80 via-slate-900/80 to-black/80 backdrop-blur-xl"
+      class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-gradient-to-br from-black/80 via-slate-900/80 to-black/80 backdrop-blur-xl"
     >
       <div
-        class="modal-content rounded-3xl w-full max-w-6xl max-h-[92vh] overflow-hidden flex flex-col relative px-4 py-4"
+        class="modal-content rounded-none sm:rounded-3xl w-full h-full sm:h-auto max-w-6xl sm:max-h-[92vh] overflow-hidden flex flex-col relative px-3 sm:px-4 py-3 sm:py-4"
       >
         <!-- Fixed Header Section -->
         <div class="flex-shrink-0 z-10 bg-slate-900/95 backdrop-blur-sm">
@@ -376,37 +484,42 @@
 
             <!-- Header Content -->
             <div
-              class="relative p-10 pb-8 border-b border-white/10 bg-slate-900/50"
+              class="relative p-4 sm:p-6 lg:p-10 pb-4 sm:pb-6 lg:pb-8 border-b border-white/10 bg-slate-900/50"
             >
-              <div class="flex items-start justify-between gap-6">
-                <div class="flex items-start gap-6 flex-1 min-w-0">
+              <div
+                class="flex items-start justify-between gap-3 sm:gap-4 lg:gap-6"
+              >
+                <div
+                  class="flex items-start gap-3 sm:gap-4 lg:gap-6 flex-1 min-w-0"
+                >
                   <!-- Enhanced Avatar with Glow Effect -->
                   <div class="relative shrink-0 group">
                     <div
-                      class="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-[3px] opacity-70 group-hover:opacity-100 transition-opacity"
+                      class="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-[2px] sm:p-[3px] opacity-70 group-hover:opacity-100 transition-opacity"
                     ></div>
                     <div
-                      class="absolute inset-0 rounded-3xl bg-gradient-to-br from-indigo-500/25 via-purple-500/25 to-pink-500/25 blur-2xl"
+                      class="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-500/25 via-purple-500/25 to-pink-500/25 blur-xl sm:blur-2xl"
                     ></div>
                     <div
                       id="modalAvatar"
-                      class="relative !w-32 !h-32 rounded-3xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-4xl overflow-hidden border-4 border-slate-900 shadow-2xl"
-                      style="width: 64px; height: 64px"
+                      class="relative !w-16 !h-16 sm:!w-24 sm:!h-24 lg:!w-32 lg:!h-32 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-xl sm:text-2xl lg:text-4xl overflow-hidden border-2 sm:border-4 border-slate-900 shadow-2xl"
                     ></div>
                   </div>
 
                   <!-- User Info Section - Redesigned Layout -->
                   <div class="flex-1 min-w-0">
                     <!-- Name and Badges Row -->
-                    <div class="flex items-center gap-4 mb-3 flex-wrap">
+                    <div
+                      class="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-2 sm:mb-3 flex-wrap"
+                    >
                       <h2
                         id="modalName"
-                        class="text-white font-bold text-3xl leading-tight tracking-tight"
+                        class="text-white font-bold text-lg sm:text-2xl lg:text-3xl leading-tight tracking-tight"
                         style="letter-spacing: -0.02em"
                       ></h2>
                       <div
                         id="modalBadges"
-                        class="flex items-center gap-2.5 shrink-0 flex-wrap"
+                        class="flex items-center gap-1.5 sm:gap-2 lg:gap-2.5 shrink-0 flex-wrap"
                       >
                         <!-- Badges will be populated by JavaScript -->
                       </div>
@@ -415,13 +528,13 @@
                     <!-- Username Row -->
                     <p
                       id="modalUsername"
-                      class="text-slate-300 text-base font-medium mb-4"
+                      class="text-slate-300 text-sm sm:text-base font-medium mb-2 sm:mb-3 lg:mb-4"
                     ></p>
 
                     <!-- Meta Info Row -->
                     <div
                       id="modalMeta"
-                      class="flex items-center gap-5 text-sm text-slate-400 flex-wrap"
+                      class="flex items-center gap-2 sm:gap-3 lg:gap-5 text-xs sm:text-sm text-slate-400 flex-wrap"
                     >
                       <!-- Meta info will be populated by JavaScript -->
                     </div>
@@ -431,10 +544,10 @@
                 <!-- Close Button -->
                 <button
                   onclick="closeProfileModal()"
-                  class="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all hover:rotate-90 shrink-0 backdrop-blur-sm border border-white/5"
+                  class="p-2 sm:p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg sm:rounded-xl transition-all hover:rotate-90 shrink-0 backdrop-blur-sm border border-white/5"
                 >
                   <svg
-                    class="w-6 h-6"
+                    class="w-5 h-5 sm:w-6 sm:h-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -454,7 +567,7 @@
           <!-- Tab Navigation -->
           <div
             id="modalTabs"
-            class="flex items-center gap-1 px-6 pt-2 pb-0 border-b border-white/5 overflow-x-auto bg-slate-900/50 backdrop-blur-sm flex-shrink-0 sticky top-0 z-10"
+            class="flex items-center gap-1 px-3 sm:px-4 lg:px-6 pt-2 pb-0 border-b border-white/5 overflow-x-auto bg-slate-900/50 backdrop-blur-sm flex-shrink-0 sticky top-0 z-10 scrollbar-hide"
           >
             <!-- Tabs will be populated by JavaScript -->
           </div>
@@ -463,8 +576,11 @@
         <!-- Scrollable Modal Body -->
         <div
           id="modalBody"
-          class="flex-1 overflow-y-auto p-8 bg-gradient-to-b from-slate-900/80 via-slate-900 to-slate-900/95 min-h-0"
-          style="max-height: calc(92vh - 200px)"
+          class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-slate-900/80 via-slate-900 to-slate-900/95 min-h-0"
+          style="
+            max-height: calc(100vh - 180px);
+            max-height: calc(92vh - 200px);
+          "
         >
           <!-- Content will be populated by JavaScript -->
         </div>
