@@ -67,6 +67,28 @@
     });
   }
 
+  // Format date for validity (date only, cleaner format)
+  function formatValidityDate(dateStr) {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return null;
+    
+    const day = date.getDate();
+    const month = date.toLocaleDateString("en-IN", { month: "short" });
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = minutes.toString().padStart(2, "0");
+    
+    return {
+      date: `${day} ${month}`,
+      year: year,
+      time: `${displayHours}:${displayMinutes} ${ampm}`
+    };
+  }
+
   // Format currency
   function formatCurrency(amount, currency = "INR") {
     if (!amount && amount !== 0) return "-";
@@ -252,9 +274,20 @@
           </div>
         </td>
         <td class="px-5 py-4">
-          <div>
-            <p class="text-sm text-white">${formatDate(purchase.dates?.purchasedAt)}</p>
-            <p class="text-xs text-slate-500">Expires: ${formatDate(purchase.dates?.expiresAt)}</p>
+          <div class="purchases-validity-cell">
+            ${(() => {
+              const purchased = formatValidityDate(purchase.dates?.purchasedAt);
+              const expires = formatValidityDate(purchase.dates?.expiresAt);
+              if (!purchased || !expires) return "-";
+              return `
+                <div class="purchases-validity-main">
+                  ${purchased.date} ${purchased.year}, ${purchased.time}
+                </div>
+                <div class="purchases-validity-expires">
+                  <span class="purchases-validity-expires-label">Expires:</span> ${expires.date} ${expires.year}, ${expires.time}
+                </div>
+              `;
+            })()}
           </div>
         </td>
         <td class="px-5 py-4">
