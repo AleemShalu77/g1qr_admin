@@ -195,7 +195,7 @@
       
       html += `
         <div class="subscriber-card p-3 border-b border-white/5 flex items-center gap-3 hover:bg-white/5 transition-colors" style="animation: fadeIn 0.3s ease forwards; animation-delay: ${index * 0.03}s; opacity: 0;">
-          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500/30 to-purple-500/30 flex items-center justify-center text-indigo-300 font-medium text-sm shrink-0">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shrink-0 shadow-lg shadow-indigo-500/20">
             ${initials}
           </div>
           <div class="flex-1 min-w-0">
