@@ -255,39 +255,66 @@
     chevron.style.transform = container.classList.contains("hidden") ? "rotate(0deg)" : "rotate(90deg)";
   };
 
-  // Get HTML content from editor
-  function getHtmlContent() {
+  // Unsubscribe footer HTML
+  const UNSUBSCRIBE_FOOTER = `
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #6b7280;">
+      <p style="margin: 0 0 8px 0;">You're receiving this email because you subscribed to our newsletter.</p>
+      <p style="margin: 0;">
+        <a href="https://appg1.fairliefer.de/unsubscribe" style="color: #6366f1; text-decoration: underline;">Unsubscribe</a> from future emails
+      </p>
+    </div>
+  `;
+
+  // Get HTML content from editor (without footer)
+  function getRawHtmlContent() {
     if (!quillEditor) return "";
     return quillEditor.root.innerHTML;
   }
 
+  // Get HTML content from editor (with unsubscribe footer)
+  function getHtmlContent() {
+    const rawHtml = getRawHtmlContent();
+    if (!rawHtml || rawHtml === "<p><br></p>") return "";
+    return rawHtml + UNSUBSCRIBE_FOOTER;
+  }
+
+  // Unsubscribe footer plain text
+  const UNSUBSCRIBE_FOOTER_TEXT = `\n\n---\nYou're receiving this email because you subscribed to our newsletter.\nUnsubscribe: https://appg1.fairliefer.de/unsubscribe`;
+
   // Get plain text content
   function getPlainTextContent() {
     const customText = document.getElementById("emailText").value.trim();
-    if (customText) return customText;
+    let baseText = "";
     
-    // Auto-generate from HTML
-    if (!quillEditor) return "";
-    return quillEditor.getText().trim();
+    if (customText) {
+      baseText = customText;
+    } else if (quillEditor) {
+      // Auto-generate from HTML
+      baseText = quillEditor.getText().trim();
+    }
+    
+    return baseText + UNSUBSCRIBE_FOOTER_TEXT;
   }
 
   // Open preview modal
   window.openPreviewModal = function () {
     const subject = document.getElementById("emailSubject").value.trim();
-    const html = getHtmlContent();
+    const rawHtml = getRawHtmlContent();
 
     if (!subject) {
       showToast("warning", "Missing Subject", "Please enter an email subject");
       return;
     }
 
-    if (!html || html === "<p><br></p>") {
+    if (!rawHtml || rawHtml === "<p><br></p>") {
       showToast("warning", "Missing Content", "Please enter some content for your newsletter");
       return;
     }
 
+    // Show preview with unsubscribe footer
+    const fullHtml = rawHtml + UNSUBSCRIBE_FOOTER;
     document.getElementById("previewSubject").textContent = `Subject: ${subject}`;
-    document.getElementById("previewContent").innerHTML = html;
+    document.getElementById("previewContent").innerHTML = fullHtml;
     document.getElementById("previewModal").classList.add("active");
   };
 
@@ -299,14 +326,14 @@
   // Open confirm modal
   window.openConfirmModal = function () {
     const subject = document.getElementById("emailSubject").value.trim();
-    const html = getHtmlContent();
+    const rawHtml = getRawHtmlContent();
 
     if (!subject) {
       showToast("warning", "Missing Subject", "Please enter an email subject");
       return;
     }
 
-    if (!html || html === "<p><br></p>") {
+    if (!rawHtml || rawHtml === "<p><br></p>") {
       showToast("warning", "Missing Content", "Please enter some content for your newsletter");
       return;
     }
