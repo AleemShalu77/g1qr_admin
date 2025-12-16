@@ -351,4 +351,54 @@ router.post("/qrcodes/export", requireAuth, async (req, res) => {
   }
 });
 
+// ============ NEWSLETTER ROUTES ============
+
+// GET /api/newsletter/subscribers - List newsletter subscribers
+router.get("/newsletter/subscribers", requireAuth, async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const endpoint = `/appUser/newsletter/subscribers?page=${page}&limit=${limit}`;
+
+    const data = await apiRequest("GET", endpoint, req.adminToken);
+    res.json(data);
+  } catch (error) {
+    console.error(
+      "List newsletter subscribers error:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      status: false,
+      error:
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to fetch subscribers",
+    });
+  }
+});
+
+// POST /api/newsletter/broadcast - Send newsletter broadcast
+router.post("/newsletter/broadcast", requireAuth, async (req, res) => {
+  try {
+    const data = await apiRequest(
+      "POST",
+      "/appUser/newsletter/broadcast",
+      req.adminToken,
+      req.body
+    );
+    res.json(data);
+  } catch (error) {
+    console.error(
+      "Send newsletter broadcast error:",
+      error.response?.data || error.message
+    );
+    res.status(error.response?.status || 500).json({
+      status: false,
+      error:
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to send newsletter",
+    });
+  }
+});
+
 module.exports = router;

@@ -65,4 +65,12 @@ router.get("/dashboard/coupons", requireAuth, (req, res) => {
   });
 });
 
+// GET /dashboard/newsletter - Newsletter management
+router.get("/dashboard/newsletter", requireAuth, (req, res) => {
+  res.render("newsletter", {
+    title: "Newsletter · G1QR Admin",
+    activePage: "newsletter",
+  });
+});
+
 module.exports = router;

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <!-- Quill Editor CSS -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body { font-family: "Inter", system-ui, sans-serif; }
+      
+      /* Toast styles */
+      #toast { transform: translateX(120%); transition: transform 0.3s ease; }
+      #toast.show { transform: translateX(0); }
+      
+      /* Modal styles */
+      .modal { display: none; }
+      .modal.active { display: flex; }
+
+      /* Quill Editor Dark Theme Customization */
+      .ql-toolbar.ql-snow {
+        background: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px 12px 0 0;
+      }
+
+      .ql-container.ql-snow {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        min-height: 300px;
+        font-size: 14px;
+      }
+
+      .ql-editor {
+        color: #e2e8f0;
+        min-height: 280px;
+      }
+
+      .ql-editor.ql-blank::before {
+        color: #64748b;
+        font-style: normal;
+      }
+
+      /* Toolbar buttons */
+      .ql-snow .ql-stroke {
+        stroke: #94a3b8;
+      }
+
+      .ql-snow .ql-fill {
+        fill: #94a3b8;
+      }
+
+      .ql-snow .ql-picker {
+        color: #94a3b8;
+      }
+
+      .ql-snow .ql-picker-options {
+        background: #1e293b;
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .ql-snow .ql-picker-item:hover,
+      .ql-snow .ql-picker-item.ql-selected {
+        color: #818cf8;
+      }
+
+      .ql-snow.ql-toolbar button:hover,
+      .ql-snow .ql-toolbar button:hover,
+      .ql-snow.ql-toolbar button:focus,
+      .ql-snow .ql-toolbar button:focus,
+      .ql-snow.ql-toolbar button.ql-active,
+      .ql-snow .ql-toolbar button.ql-active,
+      .ql-snow.ql-toolbar .ql-picker-label:hover,
+      .ql-snow .ql-toolbar .ql-picker-label:hover,
+      .ql-snow.ql-toolbar .ql-picker-label.ql-active,
+      .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+      .ql-snow.ql-toolbar .ql-picker-item:hover,
+      .ql-snow .ql-toolbar .ql-picker-item:hover,
+      .ql-snow.ql-toolbar .ql-picker-item.ql-selected,
+      .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+        color: #818cf8;
+      }
+
+      .ql-snow.ql-toolbar button:hover .ql-stroke,
+      .ql-snow .ql-toolbar button:hover .ql-stroke,
+      .ql-snow.ql-toolbar button:focus .ql-stroke,
+      .ql-snow .ql-toolbar button:focus .ql-stroke,
+      .ql-snow.ql-toolbar button.ql-active .ql-stroke,
+      .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+      .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+      .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+      .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+      .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+      .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+      .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+      .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+      .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+      .ql-snow.ql-toolbar button:hover .ql-stroke-miter,
+      .ql-snow .ql-toolbar button:hover .ql-stroke-miter,
+      .ql-snow.ql-toolbar button:focus .ql-stroke-miter,
+      .ql-snow .ql-toolbar button:focus .ql-stroke-miter,
+      .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter,
+      .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter,
+      .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+      .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+      .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+      .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+      .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+      .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+      .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
+      .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+        stroke: #818cf8;
+      }
+
+      .ql-snow.ql-toolbar button:hover .ql-fill,
+      .ql-snow .ql-toolbar button:hover .ql-fill,
+      .ql-snow.ql-toolbar button:focus .ql-fill,
+      .ql-snow .ql-toolbar button:focus .ql-fill,
+      .ql-snow.ql-toolbar button.ql-active .ql-fill,
+      .ql-snow .ql-toolbar button.ql-active .ql-fill,
+      .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
+      .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill,
+      .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
+      .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill,
+      .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill,
+      .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill,
+      .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+      .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill {
+        fill: #818cf8;
+      }
+
+      /* Links in editor */
+      .ql-editor a {
+        color: #818cf8;
+      }
+
+      /* Scrollbar for subscribers list */
+      .subscribers-list {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(99, 102, 241, 0.5) rgba(15, 23, 42, 0.3);
+      }
+
+      .subscribers-list::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .subscribers-list::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.3);
+        border-radius: 3px;
+      }
+
+      .subscribers-list::-webkit-scrollbar-thumb {
+        background: rgba(99, 102, 241, 0.5);
+        border-radius: 3px;
+      }
+
+      .subscribers-list::-webkit-scrollbar-thumb:hover {
+        background: rgba(99, 102, 241, 0.7);
+      }
+
+      /* Subscriber card hover */
+      .subscriber-card {
+        transition: all 0.2s ease;
+      }
+
+      .subscriber-card:hover {
+        background: rgba(99, 102, 241, 0.1);
+        border-color: rgba(99, 102, 241, 0.3);
+      }
+
+      /* Stat card glow */
+      .stat-card {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+        opacity: 0.7;
+      }
+
+      /* Send button pulse animation */
+      @keyframes pulse-ring {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+        }
+        70% {
+          transform: scale(1);
+          box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+        }
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+        }
+      }
+
+      .send-btn:not(:disabled):hover {
+        animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+      }
+
+      /* Preview modal content */
+      .preview-content {
+        background: white;
+        color: #1a1a1a;
+        padding: 24px;
+        border-radius: 8px;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+
+      .preview-content img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950">
+    <%- include('partials/sidebar') %>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 right-6 z-[100] max-w-sm">
+      <div id="toast-content" class="rounded-2xl p-4 shadow-2xl flex items-start gap-3 border border-white/10 backdrop-blur-xl">
+        <div id="toast-icon" class="shrink-0 w-6 h-6"></div>
+        <div class="flex-1 min-w-0">
+          <p id="toast-title" class="font-semibold text-sm"></p>
+          <p id="toast-message" class="text-sm opacity-80 mt-0.5"></p>
+        </div>
+        <button onclick="hideToast()" class="shrink-0 text-white/60 hover:text-white transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:pl-64">
+      <%- include('partials/dashboardHeader', { pageTitle: 'Newsletter', pageSubtitle: 'Manage subscribers and send broadcasts' }) %>
+
+      <!-- Page Content -->
+      <main class="p-4 lg:p-6">
+        <!-- Two Column Layout -->
+        <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
+          
+          <!-- Left Column - Subscribers List (2 cols) -->
+          <div class="xl:col-span-2 space-y-4">
+            <!-- Stats Card -->
+            <div class="stat-card bg-slate-900/50 border border-white/5 rounded-2xl p-5">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-slate-400 text-sm font-medium">Total Subscribers</p>
+                  <p id="totalSubscribers" class="text-3xl font-bold text-white mt-1">-</p>
+                </div>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+                  <svg class="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subscribers List Card -->
+            <div class="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
+              <div class="p-4 border-b border-white/5">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-white font-semibold">Subscribers</h3>
+                  <button onclick="loadSubscribers()" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" title="Refresh">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Subscribers List -->
+              <div id="subscribersContainer" class="subscribers-list max-h-[500px] overflow-y-auto">
+                <!-- Loading state -->
+                <div id="loadingState" class="p-8 text-center">
+                  <div class="flex items-center justify-center gap-3">
+                    <div class="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
+                    <span class="text-slate-400">Loading subscribers...</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div id="pagination" class="flex items-center justify-between px-4 py-3 border-t border-white/5">
+                <p id="paginationInfo" class="text-xs text-slate-400">Showing 0 of 0</p>
+                <div class="flex items-center gap-2">
+                  <button id="prevBtn" onclick="changePage(-1)" disabled class="px-2.5 py-1 text-xs text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Prev
+                  </button>
+                  <span id="pageInfo" class="px-2.5 py-1 text-xs text-white bg-indigo-500/20 rounded-lg">1</span>
+                  <button id="nextBtn" onclick="changePage(1)" disabled class="px-2.5 py-1 text-xs text-slate-400 bg-slate-800/50 rounded-lg hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Compose Newsletter (3 cols) -->
+          <div class="xl:col-span-3">
+            <div class="bg-slate-900/50 border border-white/5 rounded-2xl overflow-hidden">
+              <!-- Header -->
+              <div class="p-5 border-b border-white/5">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="text-white font-semibold">Compose Newsletter</h3>
+                    <p class="text-slate-400 text-sm">Create and send a broadcast to all subscribers</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form -->
+              <div class="p-5 space-y-5">
+                <!-- Subject -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">Subject Line</label>
+                  <input 
+                    type="text" 
+                    id="emailSubject" 
+                    placeholder="Enter email subject..."
+                    class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  >
+                </div>
+
+                <!-- HTML Editor -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-2">HTML Content</label>
+                  <div id="editor"></div>
+                </div>
+
+                <!-- Plain Text (Collapsible) -->
+                <div>
+                  <button 
+                    type="button" 
+                    onclick="togglePlainText()" 
+                    class="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-slate-300 transition-colors"
+                  >
+                    <svg id="plainTextChevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                    Plain Text Fallback
+                    <span class="text-xs text-slate-500">(auto-generated if empty)</span>
+                  </button>
+                  <div id="plainTextContainer" class="hidden mt-2">
+                    <textarea 
+                      id="emailText" 
+                      rows="4"
+                      placeholder="Plain text version of your email (leave empty to auto-generate from HTML)..."
+                      class="w-full bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500/50 resize-none transition-colors"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                  <button 
+                    type="button" 
+                    onclick="openPreviewModal()"
+                    class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition-colors"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Preview
+                  </button>
+                  <button 
+                    type="button" 
+                    id="sendBtn"
+                    onclick="openConfirmModal()"
+                    class="send-btn inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                    Send Newsletter
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal fixed inset-0 z-[60] items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-5 border-b border-white/5">
+          <div>
+            <h3 class="text-lg font-semibold text-white">Email Preview</h3>
+            <p id="previewSubject" class="text-sm text-slate-400 mt-0.5"></p>
+          </div>
+          <button onclick="closePreviewModal()" class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="flex-1 overflow-y-auto p-5">
+          <div id="previewContent" class="preview-content rounded-xl">
+            <!-- Preview content will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Send Modal -->
+    <div id="confirmModal" class="modal fixed inset-0 z-[60] items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <div class="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden">
+        <!-- Modal Header -->
+        <div class="p-5 border-b border-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center">
+              <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">Confirm Broadcast</h3>
+              <p class="text-sm text-slate-400">This action cannot be undone</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-5">
+          <p class="text-slate-300 text-sm">
+            You are about to send this newsletter to <span id="confirmSubscriberCount" class="font-semibold text-white">0</span> subscribers.
+          </p>
+          <p class="text-slate-400 text-sm mt-2">
+            Please make sure you have reviewed the content before sending.
+          </p>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-3 p-5 border-t border-white/5">
+          <button 
+            type="button" 
+            onclick="closeConfirmModal()"
+            class="px-4 py-2.5 text-sm font-medium text-slate-300 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            type="button" 
+            id="confirmSendBtn"
+            onclick="sendNewsletter()"
+            class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg id="sendSpinner" class="w-4 h-4 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span id="sendBtnText">Send Now</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quill Editor JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/newsletter.js"></script>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+      function toggleProfileMenu() {
+        const menu = document.getElementById("profileMenu");
+        menu.classList.toggle("hidden");
+      }
+      document.addEventListener("click", function (e) {
+        const menu = document.getElementById("profileMenu");
+        if (menu) {
+          const button = e.target.closest('[onclick="toggleProfileMenu()"]');
+          if (!button && !menu.contains(e.target)) {
+            menu.classList.add("hidden");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+
