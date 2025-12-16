@@ -356,8 +356,11 @@ router.post("/qrcodes/export", requireAuth, async (req, res) => {
 // GET /api/newsletter/subscribers - List newsletter subscribers
 router.get("/newsletter/subscribers", requireAuth, async (req, res) => {
   try {
-    const { page = 1, limit = 20 } = req.query;
-    const endpoint = `/appUser/newsletter/subscribers?page=${page}&limit=${limit}`;
+    const { page = 1, limit = 20, status } = req.query;
+    let endpoint = `/appUser/newsletter/subscribers?page=${page}&limit=${limit}`;
+    if (status) {
+      endpoint += `&status=${status}`;
+    }
 
     const data = await apiRequest("GET", endpoint, req.adminToken);
     res.json(data);

@@ -117,7 +117,7 @@
       existingCards.forEach(card => card.remove());
 
       const response = await fetch(
-        `${API_BASE_URL}/newsletter/subscribers?page=${currentPage}&limit=${limit}`,
+        `${API_BASE_URL}/newsletter/subscribers?page=${currentPage}&limit=${limit}&status=active`,
         {
           method: "GET",
           headers: {
